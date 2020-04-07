@@ -1,0 +1,10 @@
+#! /usr/bin/env python
+
+import project1.laser
+
+
+if __name__ == '__main__':
+    try:
+        project1.laser.LaserHandler()
+    except:
+        rospy.loginfo("Laser node terminated.")
