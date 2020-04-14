@@ -33,7 +33,7 @@ class Drive():
         rospy.on_shutdown(self.shutdown)
         
 	# Create a publisher which can "talk" to TurtleBot and tell it to move
-	# Changed the topic to custom topic defined in project1/param/mux.yaml
+	# Changed the topic to custom topic defined in MajorProject/param/mux.yaml
         self.cmd_vel = rospy.Publisher('cmd_vel_mux/input/drive', Twist, queue_size=10)
      
 	# TurtleBot will stop if we don't keep telling it to move.  How often should we tell it to move? 10 HZ
