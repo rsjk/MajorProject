@@ -22,12 +22,15 @@ class Collision:
         if (data.state == BumperEvent.PRESSED):
             rospy.loginfo('Bumper pressed') # Added logging
             rate = rospy.Rate(10)
-	    # Added loop to keep publishing 0 velocity
-            while not rospy.is_shutdown():
-                self.pub = rospy.Publisher('cmd_vel_mux/input/bumper_halt', Twist, queue_size=10)
-            	self.pub.publish(Twist())
-	    	# wait for 0.1 seconds (10 HZ) and publish again
-            	rate.sleep()
+
+	    # Added
+            move_cmd = Twist()
+	    # go backward at 0.2 m/s
+            move_cmd.linear.x = -0.2
+	    # turn at 0 radians/s
+	    move_cmd.angular.z = 0
+            self.pub = rospy.Publisher('cmd_vel_mux/input/bumper_halt', Twist, queue_size=10)
+            self.pub.publish(move_cmd)
         else:
             rospy.loginfo('Bumper not pressed') # Added logging
 
