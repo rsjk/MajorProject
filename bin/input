@@ -1,0 +1,10 @@
+#! /usr/bin/env python
+
+import MajorProject.input
+
+
+if __name__ == '__main__':
+    try:
+        MajorProject.input.Input()
+    except:
+        rospy.loginfo("Input node terminated.")
