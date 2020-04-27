@@ -1,0 +1,10 @@
+#! /usr/bin/env python
+
+import MajorProject.user_input
+
+
+if __name__ == '__main__':
+    try:
+        MajorProject.user_input.UserInput()
+    except rospy.ROSInterruptException:
+        rospy.loginfo("user_input node terminated")
