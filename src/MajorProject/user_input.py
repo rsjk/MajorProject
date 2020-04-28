@@ -13,11 +13,11 @@ class UserInput():
             choice = raw_input("A: Atrium\nB: Computer Lab\nC: Electronics Lab\nD: Team Room\nE: Main Office\nF: Quit\n")
 
             # Highlight locations on map of DEH
-            atrium_pos = {'name': 'Atrium', 'x': 1.57, 'y' : -6.00}
-            comp_lab_pos = {'name': 'Computer Lab', 'x': 10.3, 'y' : -1.93}
-            elec_lab_pos = {'name': 'Electronics Lab', 'x': -3.52, 'y' : -2.23}
-            team_room_pos = {'name': 'Team Room', 'x': -7.01, 'y' : -4.44}
-            main_office_pos =  {'name': 'Main Office', 'x': -5.87, 'y' : 1.33}
+            atrium_pos = {'name': 'Atrium', 'x': 2, 'y' : -5}
+            comp_lab_pos = {'name': 'Computer Lab', 'x': 8, 'y' : -1}
+            elec_lab_pos = {'name': 'Electronics Lab', 'x': 1, 'y' : -1}
+            team_room_pos = {'name': 'Team Room', 'x': -8, 'y' : -6}
+            main_office_pos =  {'name': 'Main Office', 'x': -8, 'y' : 3}
             pos = Point()
 
             valid = True

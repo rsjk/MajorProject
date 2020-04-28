@@ -83,7 +83,7 @@ class GoToPose():
     def shutdown(self):
         if self.goal_sent:
             self.move_base.cancel_goal()
-        rospy.loginfo("Stop")
+        rospy.loginfo("go_to_point node terminated")
         rospy.sleep(1)
 
 
