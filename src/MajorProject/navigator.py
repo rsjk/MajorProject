@@ -19,6 +19,7 @@ from actionlib_msgs.msg import *
 from geometry_msgs.msg import Pose, Point, Quaternion
 from std_msgs.msg import Bool
 
+
 class Navigator():
     def __init__(self):
         rospy.init_node('navigator', anonymous=False)
@@ -36,7 +37,8 @@ class Navigator():
 	self.move_base.wait_for_server(rospy.Duration(5))
 
         self.sub = rospy.Subscriber('navi_goal', Point, self.callback)
-        self.pub = rospy.Publisher('navi_result', Bool, queue_size=10)
+        self.pub = rospy.Publisher('navi_done', Bool, queue_size=10)
+        self.pub_2 = rospy.Publisher('navi_result', Bool, queue_size=10)
 
 	# Spin until the node is terminated
         rospy.spin()
@@ -55,31 +57,26 @@ class Navigator():
 	# Start moving
         self.move_base.send_goal(goal)
 
-	# Allow TurtleBot up to 60 seconds to complete task
-	success = self.move_base.wait_for_result(rospy.Duration(60)) 
+	# Allow TurtleBot up to 120 seconds to complete task
+	success = self.move_base.wait_for_result(rospy.Duration(120)) 
 
         state = self.move_base.get_state()
         result = False
 
         if success and state == GoalStatus.SUCCEEDED:
-            # We made it!
-            result = True
+            self.pub_2.publish(True)
         else:
             self.move_base.cancel_goal()
+            self.pub_2.publish(False)
 
         self.goal_sent = False
 
-        # Tell user_input node we've arrived at the destination
-        if success:
-            rospy.loginfo("We've arrived at the desired destination")
-        else:
-            rospy.loginfo("The base failed to the desired destination")
-
         # Tell planner the task is done
         self.pub.publish(True)
-       
+      
         # Sleep to give the last log messages time to be sent
         rospy.sleep(1)
+
 
     def shutdown(self):
         if self.goal_sent:
@@ -93,3 +90,4 @@ if __name__ == '__main__':
         Navigator()
     except rospy.ROSInterruptException:
         rospy.loginfo("navigator node terminated")
+
