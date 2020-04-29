@@ -1,0 +1,10 @@
+#! /usr/bin/env python
+
+import MajorProject.navigator
+
+
+if __name__ == '__main__':
+    try:
+        MajorProject.navigator.Navigator()
+    except:
+        rospy.loginfo("navigator node terminated")

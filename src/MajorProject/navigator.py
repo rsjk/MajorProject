@@ -19,9 +19,9 @@ from actionlib_msgs.msg import *
 from geometry_msgs.msg import Pose, Point, Quaternion
 from std_msgs.msg import Bool
 
-class GoToPose():
+class Navigator():
     def __init__(self):
-        rospy.init_node('go_to_point', anonymous=False)
+        rospy.init_node('navigator', anonymous=False)
 
         self.goal_sent = False
 
@@ -35,8 +35,8 @@ class GoToPose():
 	# Allow up to 5 seconds for the action server to come up
 	self.move_base.wait_for_server(rospy.Duration(5))
 
-        self.sub = rospy.Subscriber('user_input', Point, self.callback)
-        #self.pub = rospy.Publisher('nav_result', Bool, queue_size=10)
+        self.sub = rospy.Subscriber('navi_goal', Point, self.callback)
+        self.pub = rospy.Publisher('navi_result', Bool, queue_size=10)
 
 	# Spin until the node is terminated
         rospy.spin()
@@ -49,7 +49,7 @@ class GoToPose():
 	goal.target_pose.header.frame_id = 'map'
 	goal.target_pose.header.stamp = rospy.Time.now()
 
-        goal.target_pose.pose = Pose(Point(data.x, data.y, 0.000),
+        goal.target_pose.pose = Pose(data,
                                      Quaternion(0.000, 0.000, 0.000, 1.000))
 
 	# Start moving
@@ -75,7 +75,8 @@ class GoToPose():
         else:
             rospy.loginfo("The base failed to the desired destination")
 
-        #self.pub.publish(success)
+        # Tell planner the task is done
+        self.pub.publish(True)
        
         # Sleep to give the last log messages time to be sent
         rospy.sleep(1)
@@ -83,12 +84,12 @@ class GoToPose():
     def shutdown(self):
         if self.goal_sent:
             self.move_base.cancel_goal()
-        rospy.loginfo("go_to_point node terminated")
+        rospy.loginfo("navigator node terminated")
         rospy.sleep(1)
 
 
 if __name__ == '__main__':
     try:
-        GoToPose()
+        Navigator()
     except rospy.ROSInterruptException:
-        rospy.loginfo("go_to_point node terminated")
+        rospy.loginfo("navigator node terminated")
