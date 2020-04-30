@@ -137,6 +137,8 @@ class Planner():
         # Check if navigation was successful
         if self.task_result:
             print("We've arrived at the {}.".format(location_name))
+        else:
+            print("Sorry, I have failed to bring you to {}.".format(location_name))
         self.task_done = False # Reset to false
                 
   
