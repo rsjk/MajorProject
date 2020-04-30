@@ -31,7 +31,7 @@ class Collision:
             move_cmd.linear.x = -0.2
 	    # turn at 0 radians/s
 	    move_cmd.angular.z = 0
-            self.pub = rospy.Publisher('cmd_vel_mux/input/bumper_halt', Twist, queue_size=10)
+            self.pub = rospy.Publisher('cmd_vel_mux/input/safety_controller', Twist, queue_size=10)
             self.pub.publish(move_cmd)
         else:
             rospy.loginfo('Bumper not pressed') # Added logging
@@ -41,5 +41,5 @@ if __name__ == '__main__':
     try:
         Collision()
     except rospy.ROSInterruptException:
-        rospy.loginfo('collision node terminated.')
+        rospy.loginfo('collision node terminated')
 

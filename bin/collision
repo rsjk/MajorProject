@@ -7,4 +7,4 @@ if __name__ == '__main__':
     try:
         MajorProject.collision.Collision()
     except:
-        rospy.loginfo("Collision node terminated.")
+        rospy.loginfo('collision node terminated')
