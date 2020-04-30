@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 import rospy
 from kobuki_msgs.msg import BumperEvent
 from geometry_msgs.msg import Twist
 
 
-# Class to handle collisions. When colliding with an object, the TurtleBot witll halt.
+# The Collison Class to handle collisions. When colliding with an object, the TurtleBot witll back up.
 class Collision:
     def __init__(self):
         # initialize
@@ -39,5 +41,5 @@ if __name__ == '__main__':
     try:
         Collision()
     except rospy.ROSInterruptException:
-        rospy.loginfo("Collision node terminated.")
+        rospy.loginfo('collision node terminated.')
 
