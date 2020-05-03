@@ -102,23 +102,22 @@ class Planner():
             # Calculate nearest point
             
             # List to keep track of remaining locations when locations are added to the visit order
-            remaining_locations = [constant.ATRIUM_NAME, constant.COMP_LAB_NAME, constant.ELEC_LAB_NAME, constant.TEAM_ROOM_NAME, constant.MAIN_OFFICE_NAME]
+            remaining_locations = [constant.TEAM_ROOM_NAME, constant.ATRIUM_NAME, constant.COMP_LAB_NAME, constant.MAIN_OFFICE_NAME, constant.ELEC_LAB_NAME]
             
             point = []
             visit_order = []
+            start_x = self.x_pos
+            start_y = self.y_pos
+            point = self.findNearestLocation(start_x, start_y, remaining_locations) 
+            index = 0
             for x in range(len(remaining_locations)):
-                if x == 0:
-                    # Tour just started -- set position to position determined by poseCallback
-                    start_x = self.x_pos
-                    start_y = self.y_pos
-                else:
-                    # Next position to find nearest location is the point previously found
-                    start_x = point[1].x
-                    start_y = point[1].y
-                    
-                point = self.findNearestLocation(start_x, start_y, remaining_locations) 
+                if(point[0] == remaining_locations[x]):
+                    break
+                index += 1
+            for x in range(len(remaining_locations)):
+                next_loc = [remaining_locations[(x+index)%5], constant.LOCATIONS[remaining_locations[(x+index)%5]]]
                 # Append tour point to list of order to visit
-                visit_order.append(point)    
+                visit_order.append(next_loc
 
             # Publish the points
             for i in range(len(visit_order)):
@@ -156,7 +155,6 @@ class Planner():
                 min_dist = dist
                 location = constant.LOCATIONS[x] # Get the point to go to
                 name = x # Get the name of the highlight
-        remaining_locations.remove(name) # Remove selected location from the list of remaining locations
         location_list = [name, location]
         return location_list # Return the selected location and name of the location
 
