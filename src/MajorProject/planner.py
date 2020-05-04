@@ -67,66 +67,127 @@ class Planner():
             print('Please choose one of the following destinations:')
             print('A: {}\nB: {}\nC: {}\nD: {}\nE: {}'.format(constant.ATRIUM_NAME, constant.COMP_LAB_NAME,
                                                                constant.ELEC_LAB_NAME, constant.TEAM_ROOM_NAME, constant.MAIN_OFFICE_NAME))
-            location = raw_input()
-            point = Point()
-            name = ''
+            destination = raw_input()
+            target_loc = Point()
+            target_name = ''
             valid = True
  
-            # Set what location to go to based on user input
-            if location == 'A':
-                point = constant.ATRIUM_POS
-                name = constant.ATRIUM_NAME
-            elif location == 'B':
-                point = constant.COMP_LAB_POS
-                name = constant.COMP_LAB_NAME
-            elif location == 'C':
-                point = constant.ELEC_LAB_POS
-                name = constant.ELEC_LAB_NAME
-            elif location == 'D':
-                point = constant.TEAM_ROOM_POS
-                name = constant.TEAM_ROOM_NAME
-            elif location == 'E':
-                point = constant.MAIN_OFFICE_POS
-                name = constant.MAIN_OFFICE_NAME
+            # Set what destination to go to based on user input
+            if destination == 'A':
+                target_loc = constant.ATRIUM_POS
+                target_name = constant.ATRIUM_NAME
+            elif destination == 'B':
+                target_loc = constant.COMP_LAB_POS
+                target_name = constant.COMP_LAB_NAME
+            elif destination == 'C':
+                target_loc = constant.ELEC_LAB_POS
+                target_name = constant.ELEC_LAB_NAME
+            elif destination == 'D':
+                target_loc = constant.TEAM_ROOM_POS
+                target_name = constant.TEAM_ROOM_NAME
+            elif destination == 'E':
+                target_loc = constant.MAIN_OFFICE_POS
+                target_name = constant.MAIN_OFFICE_NAME
             else:
                 # User entered an invalid choice
                 print('Invalid choice\n')
                 valid = False
+                
+            # Get current position
+            start_x = self.x_pos
+            start_y = self.y_pos
 
-            # Publish point if valid
-            if valid:
-                self.publishPoint(point, name)
+            # Check if the robot is already in the location
+            in_location = self.inLocation(start_x, start_y, target_loc)
+            
+            # Publish point if valid and not in location
+            if in_location: 
+                print("We're at the {}.".format(target_name))
+            else:
+                if valid:
+                    self.publishPoint(target_loc, target_name)
                 
         # Tour chosen    
-        elif travel_type == 'B':
-            # Calculate nearest point
+        elif travel_type == 'B': 
+            visit_order = []     # Order to visit the locations
+            start_x = self.x_pos # Get the robot's current x position
+            start_y = self.y_pos # Get the robot's current y position
             
-            # List to keep track of remaining locations when locations are added to the visit order
-            remaining_locations = [constant.ATRIUM_NAME, constant.COMP_LAB_NAME, constant.ELEC_LAB_NAME, constant.TEAM_ROOM_NAME, constant.MAIN_OFFICE_NAME]
+            # Find he nearest location relative to current position
+            nearest_loc = self.findNearestLocation(start_x, start_y)
             
-            point = []
-            visit_order = []
-            for x in range(len(remaining_locations)):
-                if x == 0:
-                    # Tour just started -- set position to position determined by poseCallback
-                    start_x = self.x_pos
-                    start_y = self.y_pos
+            # Check if the robot is already in the location
+            in_location = self.inLocation(start_x, start_y, nearest_loc[1])
+            
+            # Find index of location in tour order
+            index = 0
+            for x in range(len(constant.TOUR_ORDER)):
+                if(nearest_loc[0] == constant.TOUR_ORDER[x]):
+                    break
+                index += 1
+            # Determine the visit order
+            for x in range(len(constant.TOUR_ORDER)):
+                next_loc = [constant.TOUR_ORDER[(x+index)%5], constant.LOCATIONS[constant.TOUR_ORDER[(x+index)%5]]]
+                # Append tour location to list of order to visit
+                if not in_location:
+                    visit_order.append(next_loc)
                 else:
-                    # Next position to find nearest location is the point previously found
-                    start_x = point[1].x
-                    start_y = point[1].y
-                    
-                point = self.findNearestLocation(start_x, start_y, remaining_locations) 
-                # Append tour point to list of order to visit
-                visit_order.append(point)    
+                    # Already in location -- skip publishing first point
+                    if x == 0:
+                        print("We're in the {}.".format(next_loc[0]))
+                    else:
+                        visit_order.append(next_loc)
 
-            # Publish the points
+            # Publish the locations
             for i in range(len(visit_order)):
                 self.publishPoint(visit_order[i][1], visit_order[i][0])
         else:
             # User entered an invalid choice
             print('Invalid choice\n')
-        
+ 
+ 
+    # Function to determine if the current position is already in the given location
+    def inLocation(self, start_x, start_y, location):
+        if location == constant.ATRIUM_POS:
+            if constant.ATRIUM_BOUNDS[0].x <= start_x <= constant.ATRIUM_BOUNDS[1].x:
+                if constant.ATRIUM_BOUNDS[0].y <= start_y <= constant.ATRIUM_BOUNDS[1].y:
+                    # Current location is in atrium bounds
+                    return True
+        elif location == constant.COMP_LAB_POS:
+            if constant.COMP_LAB_BOUNDS[0].x <= start_x <= constant.COMP_LAB_BOUNDS[1].x:
+                if constant.COMP_LAB_BOUNDS[0].y <= start_y <= constant.COMP_LAB_BOUNDS[1].y:
+                    # Current location is in computer labbounds
+                    return True
+        elif location == constant.ELEC_LAB_POS:
+            if constant.ELEC_LAB_BOUNDS[0].x <= start_x <= constant.ELEC_LAB_BOUNDS[1].x:
+                if constant.ELEC_LAB_BOUNDS[0].y <= start_y <= constant.ELEC_LAB_BOUNDS[1].y:
+                    # Current location is in electric lab bounds
+                    return True           
+        elif location == constant.TEAM_ROOM_POS:
+            if constant.TEAM_ROOM_BOUNDS[0].x <= start_x <= constant.TEAM_ROOM_BOUNDS[1].x:
+                if constant.TEAM_ROOM_BOUNDS[0].y <= start_y <= constant.TEAM_ROOM_BOUNDS[1].y:
+                    # Current location is in team room bounds
+                    return True
+        elif location == constant.MAIN_OFFICE_POS:
+            if constant.MAIN_OFFICE_BOUNDS[0].x <= start_x <= constant.MAIN_OFFICE_BOUNDS[1].x:
+                if constant.MAIN_OFFICE_BOUNDS[0].y <= start_y <= constant.MAIN_OFFICE_BOUNDS[1].y:
+                    # Current location is in main office bounds
+                    return True
+ 
+ 
+    # Function to find the nearest highlight location to (start_x, start_y)  
+    def findNearestLocation(self, start_x, start_y):
+        location = ()
+        min_dist = 5000 # Some large number the distance will not be
+        for item in constant.LOCATIONS.items():
+            # sqrt((x_a - x_b)^2 + (y_a - y_b)^2)
+            dist =  math.sqrt((start_x - item[1].x)**2 + (start_y - item[1].y)**2)
+            # If current dist is less than min dist, replace min dist
+            if dist < min_dist:
+                min_dist = dist
+                location = item
+        return location  
+           
     
     # Function to publish a point to the navigator        
     def publishPoint(self, location, location_name):
@@ -139,26 +200,7 @@ class Planner():
             print("We've arrived at the {}.".format(location_name))
         else:
             print("Sorry, I have failed to bring you to {}.".format(location_name))
-        self.task_done = False # Reset to false
-                
-  
-    # Function to find the nearest highlight location to (start_x, start_y)            
-    def findNearestLocation(self, start_x, start_y, remaining_locations):
-        location = Point()
-        name = ''
-        min_dist = 5000 # Some large number the distance will not be
-        # Iterate through remaining locations, finding the distance
-        for x in remaining_locations:
-            # sqrt((x_a - x_b)^2 + (y_a - y_b)^2)
-            dist =  math.sqrt((start_x - constant.LOCATIONS[x].x)**2 + (start_y - constant.LOCATIONS[x].y)**2)
-            # If current dist is less than min dist, replace min dist
-            if dist < min_dist:
-                min_dist = dist
-                location = constant.LOCATIONS[x] # Get the point to go to
-                name = x # Get the name of the highlight
-        remaining_locations.remove(name) # Remove selected location from the list of remaining locations
-        location_list = [name, location]
-        return location_list # Return the selected location and name of the location
+        self.task_done = False # Reset to false       
 
       
 if __name__ == '__main__':
