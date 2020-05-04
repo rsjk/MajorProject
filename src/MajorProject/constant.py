@@ -19,10 +19,10 @@ MAIN_OFFICE_POS = Point(-8, 3, 0)
 
 # Highlight locations bounding points
 ATRIUM_BOUNDS = (Point(-3.67, -7.06, 0), Point(9.62, -2.52, 0))
-COMP_LAB_BOUNDS = (Point(5.47, -2.46, 0), Point(9.96, 1.05, 0))
-ELEC_LAB_BOUNDS = (Point(-3.41, -2.96, 0), Point(5.26, 0.802, 0))
-TEAM_ROOM_BOUNDS = (Point(-9.92, -6.99, 0), Point(-6.53, -4.47, 0))
-MAIN_OFFICE_BOUNDS = (Point(-9.95, 0.514, 0), Point(-6.6, 4.86, 0))
+COMP_LAB_BOUNDS = (Point(5.83, -2.33, 0), Point(9.77, 0.854, 0))
+ELEC_LAB_BOUNDS = (Point(-3.26, -2.8, 0), Point(5.03, 0.676, 0))
+TEAM_ROOM_BOUNDS = (Point(-9.72, -6.66, 0), Point(-6.68, -4.57, 0))
+MAIN_OFFICE_BOUNDS = (Point(-9.7, 0.711, 0), Point(-6.65, 4.68, 0))
 
 # Dictionary of locations
 LOCATIONS = {ATRIUM_NAME: ATRIUM_POS, COMP_LAB_NAME : COMP_LAB_POS, ELEC_LAB_NAME: ELEC_LAB_POS, 

@@ -173,6 +173,9 @@ class Planner():
                 if constant.MAIN_OFFICE_BOUNDS[0].y <= start_y <= constant.MAIN_OFFICE_BOUNDS[1].y:
                     # Current location is in main office bounds
                     return True
+                
+        # If we get here, we're not in the given location
+        return False
  
  
     # Function to find the nearest highlight location to (start_x, start_y)  
