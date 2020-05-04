@@ -117,7 +117,7 @@ class Planner():
             for x in range(len(remaining_locations)):
                 next_loc = [remaining_locations[(x+index)%5], constant.LOCATIONS[remaining_locations[(x+index)%5]]]
                 # Append tour point to list of order to visit
-                visit_order.append(next_loc
+                visit_order.append(next_loc)
 
             # Publish the points
             for i in range(len(visit_order)):
