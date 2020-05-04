@@ -20,3 +20,6 @@ MAIN_OFFICE_POS = Point(-8, 3, 0)
 # Dictionary of locations
 LOCATIONS = {ATRIUM_NAME: ATRIUM_POS, COMP_LAB_NAME : COMP_LAB_POS, ELEC_LAB_NAME: ELEC_LAB_POS, 
                               TEAM_ROOM_NAME: TEAM_ROOM_POS, MAIN_OFFICE_NAME: MAIN_OFFICE_POS}
+
+# Pre-determined tour route. If starting location is closest to the electronics lab, next location will be the team room and follow the order.
+TOUR_ORDER = [TEAM_ROOM_NAME, ATRIUM_NAME, COMP_LAB_NAME, MAIN_OFFICE_NAME, ELEC_LAB_NAME]

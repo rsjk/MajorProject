@@ -99,27 +99,26 @@ class Planner():
                 
         # Tour chosen    
         elif travel_type == 'B':
-            # Calculate nearest point
+            location = []        # Nearest location. A list of [location name, location point (x, y)]     
+            visit_order = []     # Order to visit the locations
+            start_x = self.x_pos # Get the robot's current x position
+            start_y = self.y_pos # Get the robot's current y position
             
-            # List to keep track of remaining locations when locations are added to the visit order
-            remaining_locations = [constant.TEAM_ROOM_NAME, constant.ATRIUM_NAME, constant.COMP_LAB_NAME, constant.MAIN_OFFICE_NAME, constant.ELEC_LAB_NAME]
+            # Find he nearest location relative to current position
+            location = self.findNearestLocation(start_x, start_y) 
             
-            point = []
-            visit_order = []
-            start_x = self.x_pos
-            start_y = self.y_pos
-            point = self.findNearestLocation(start_x, start_y, remaining_locations) 
+            # Determine the visit order
             index = 0
-            for x in range(len(remaining_locations)):
-                if(point[0] == remaining_locations[x]):
+            for x in range(len(constant.TOUR_ORDER)):
+                if(location[0] == constant.TOUR_ORDER[x]):
                     break
                 index += 1
-            for x in range(len(remaining_locations)):
-                next_loc = [remaining_locations[(x+index)%5], constant.LOCATIONS[remaining_locations[(x+index)%5]]]
-                # Append tour point to list of order to visit
+            for x in range(len(constant.TOUR_ORDER)):
+                next_loc = [constant.TOUR_ORDER[(x+index)%5], constant.LOCATIONS[constant.TOUR_ORDER[(x+index)%5]]]
+                # Append tour location to list of order to visit
                 visit_order.append(next_loc)
 
-            # Publish the points
+            # Publish the locations
             for i in range(len(visit_order)):
                 self.publishPoint(visit_order[i][1], visit_order[i][0])
         else:
@@ -142,19 +141,19 @@ class Planner():
                 
   
     # Function to find the nearest highlight location to (start_x, start_y)            
-    def findNearestLocation(self, start_x, start_y, remaining_locations):
+    def findNearestLocation(self, start_x, start_y):
         location = Point()
         name = ''
         min_dist = 5000 # Some large number the distance will not be
-        # Iterate through remaining locations, finding the distance
-        for x in remaining_locations:
+        # Iterate through tour locations, finding the distance
+        for i in constant.TOUR_ORDER:
             # sqrt((x_a - x_b)^2 + (y_a - y_b)^2)
-            dist =  math.sqrt((start_x - constant.LOCATIONS[x].x)**2 + (start_y - constant.LOCATIONS[x].y)**2)
+            dist =  math.sqrt((start_x - constant.LOCATIONS[i].x)**2 + (start_y - constant.LOCATIONS[i].y)**2)
             # If current dist is less than min dist, replace min dist
             if dist < min_dist:
                 min_dist = dist
-                location = constant.LOCATIONS[x] # Get the point to go to
-                name = x # Get the name of the highlight
+                location = constant.LOCATIONS[i] # Get the point to go to
+                name = i # Get the name of the highlight
         location_list = [name, location]
         return location_list # Return the selected location and name of the location
 
